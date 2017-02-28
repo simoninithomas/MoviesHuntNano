@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Movies Hunt</string>
+
+    <!-- Hello Activity -->
+    <string name="begin_button">Lets find a movie</string>
+    <string name="summary">Movies Hunt helps you to find your next movie.</string>
+
+    <!-- Movie Info -->
+    <string name="favorites_button">Add to favorites</string>
+    <string name="reviews">Reviews</string>
+
+</resources>

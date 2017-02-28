@@ -19,29 +19,29 @@ import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
-    //private final PosterItemClickListener mOnClickListener;
+    private final PosterItemClickListener mOnClickListener;
     private Context context;
     private List<Movies> mMovies;
 
 
     /*
         RESPONDING TO CLICK ITEMS
-
+*/
     // Step 1: Create an interface that will define our listener
     public interface PosterItemClickListener {
         // Method that takes an int as parameter
         void onClick(int clickedItemIndex);
 
-    } */
+    }
 
     /*
         VIEW HOLDER
      */
     // ViewHolders cache the references to the views that will be modified in the adapter.
     // We create a class called MovieViewHolder that extends Recycler.ViewHolder
-    public class MovieViewHolder extends RecyclerView.ViewHolder
+    public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
-        //implements View.OnClickListener
+        //
         // Create a ImageView variable called posterView
         ImageView posterView;
 
@@ -54,19 +54,19 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             posterView = (ImageView) itemView.findViewById(R.id.tv_poster);
             // Call setOnClickListener on the View passed into the constructor
             // (use 'this' as the OnClickListener)
-            //itemView.setOnClickListener(this);
+            itemView.setOnClickListener(this);
             Log.v("Call on movie viewhol", "");
         }
 
-        /* Override onClickMethod
+        // Override onClickMethod
         @Override
         public void onClick(View view) {
             // Get the adapter position (item that was selected)
             int clickedPosition = getAdapterPosition();
-            //mOnClickListener.onClick(clickedPosition);
+            mOnClickListener.onClick(clickedPosition);
 
             //Toast.makeText(context, arr[1], Toast.LENGTH_SHORT).show();
-        }*/
+        }
     }
 
     /*
@@ -79,11 +79,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
 
     // Populate that var in the constructor
-    //PosterItemClickListener listener
-    public MovieAdapter(Context context, int numberOfItems, ArrayList<Movies> movies) {
+
+    public MovieAdapter(Context context, int numberOfItems, ArrayList<Movies> movies, PosterItemClickListener listener) {
         mNumberItems = numberOfItems;
         mMovies = movies;
-        //mOnClickListener = listener;
+        mOnClickListener = listener;
         this.context = context;
 
     }

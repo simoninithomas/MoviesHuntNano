@@ -33,7 +33,6 @@ public class PosterActivity extends Activity implements MovieAdapter.PosterItemC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_poster);
 
-        int hello = this;
 
         // Get a reference of our RecyclerView from xml :
         // It allows us the do things like set the Adapter of the RecyclerView and toggle the

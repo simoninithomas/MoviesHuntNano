@@ -16,6 +16,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".PosterActivity"></activity>
+        <activity android:name=".MovieInfoActivity" android:parentActivityName=".PosterActivity"></activity>
     </application>
+
+    <provider
+        android:authorities="com.movieshunt.simonini.movieshunt"
+        android:name="com.movieshunt.simonini.movieshunt.data.MoviesContentProvider"
+        android:exported="false"/>
 
 </manifest>

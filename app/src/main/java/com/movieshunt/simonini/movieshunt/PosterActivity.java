@@ -37,6 +37,7 @@ public class PosterActivity extends Activity implements MovieAdapter.PosterItemC
     @BindView(R.id.rv_movies)
     RecyclerView mRecyclerView;
 
+    ArrayList<Movies> moviesArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +56,13 @@ public class PosterActivity extends Activity implements MovieAdapter.PosterItemC
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        // Initialize new adapter
-        adapter = new MovieAdapter(getApplicationContext(), NUM_LIST_ITEMS, new ArrayList<Movies>(), this);
+        moviesArrayList = new ArrayList<>();
+
+        getTopRatedCall(mRecyclerView);
 
 
-        getPopularCall(mRecyclerView);
+
+
 
     }
 
@@ -97,18 +100,22 @@ public class PosterActivity extends Activity implements MovieAdapter.PosterItemC
     /*
         CALL: get top rated movies
      */
-    public void getTopRatedCall(RecyclerView mRecyclerView, final Callback<Movies> cb) {
+    public void getTopRatedCall(RecyclerView mRecyclerView) {
         final RecyclerView recyclerView = mRecyclerView;
         final MovieAdapter.PosterItemClickListener listener = this;
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
 
-        Call<MoviesList> call = apiService.getTopRated(config.API_KEY, cb);
+        Call<MoviesList> call = apiService.getTopRated(config.API_KEY);
         call.enqueue(new Callback<MoviesList>() {
             @Override
             public void onResponse(Call<MoviesList> call, Response<MoviesList> response) {
                 final List<Movies> movies = response.body().getResults();
-
+                moviesArrayList.clear();
+                List<Movies> moviesResult = movies;
+                for (Movies singleMovie : response.body().getResults()){
+                    moviesArrayList.add(singleMovie);
+                }
                 recyclerView.setAdapter(new MovieAdapter(getApplicationContext(), NUM_LIST_ITEMS, movies, listener));
             }
 
@@ -124,18 +131,25 @@ public class PosterActivity extends Activity implements MovieAdapter.PosterItemC
     /*
        CALL: get popular
     */
-    public void getPopularCall(RecyclerView mRecyclerView, final Callback<Movies> cb) {
+    public void getPopularCall(RecyclerView mRecyclerView) {
         final RecyclerView recyclerView = mRecyclerView;
         final MovieAdapter.PosterItemClickListener listener = this;
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
 
-        Call<MoviesList> call = apiService.getPopular(config.API_KEY, cb);
+        Call<MoviesList> call = apiService.getPopular(config.API_KEY);
         call.enqueue(new Callback<MoviesList>() {
             @Override
             public void onResponse(Call<MoviesList> call, Response<MoviesList> response) {
-                List<Movies> movies = response.body().getResults();
+                final List<Movies> movies = response.body().getResults();
+                moviesArrayList.clear();
+                List<Movies> moviesResult = movies;
+                for (Movies singleMovie : response.body().getResults()){
+                    moviesArrayList.add(singleMovie);
+                }
                 recyclerView.setAdapter(new MovieAdapter(getApplicationContext(), NUM_LIST_ITEMS, movies, listener));
+
+
             }
 
             @Override
@@ -150,9 +164,8 @@ public class PosterActivity extends Activity implements MovieAdapter.PosterItemC
     public void onPosterItemClick(int clickedPosterIndex) {
         Context context = getApplicationContext();
         Intent i = new Intent(this, MovieInfoActivity.class);
-        i.putExtra("MOVIE_INFO", movies.get(clickedPosterIndex));
+        i.putExtra("MOVIE_INFO", moviesArrayList.get(clickedPosterIndex));
         startActivity(i);
-        Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
     }
 
 

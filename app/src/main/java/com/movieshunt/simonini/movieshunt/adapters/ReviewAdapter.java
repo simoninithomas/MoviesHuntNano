@@ -11,9 +11,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+
 import com.movieshunt.simonini.movieshunt.R;
 import com.movieshunt.simonini.movieshunt.models.Review;
-
 
 import org.w3c.dom.Text;
 

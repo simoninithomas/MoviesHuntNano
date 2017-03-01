@@ -51,16 +51,16 @@ public class Movies implements Parcelable {
     }
 
     public String getPoster() {
-        return "http://image.tmdb.org/t/p/w185/" + poster_path;
+        return "http://image.tmdb.org/t/p/w342/" + poster_path;
     }
 
     public void setPoster(String poster_path) {
 
-        this.poster_path = "http://image.tmdb.org/t/p/w185/" + poster_path;
+        this.poster_path = "http://image.tmdb.org/t/p/w342/" + poster_path;
     }
 
     public String getBackdrop() {
-        return backdrop_path;
+        return "http://image.tmdb.org/t/p/w342/" + backdrop_path;
     }
 
     public void setBackdrop(String backdrop_path) {

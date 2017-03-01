@@ -2,7 +2,9 @@ package com.movieshunt.simonini.movieshunt;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Movie;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +25,7 @@ import com.movieshunt.simonini.movieshunt.network.ApiClient;
 import com.movieshunt.simonini.movieshunt.network.ApiInterface;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -33,7 +36,7 @@ import retrofit2.Response;
 
 import static android.content.ContentValues.TAG;
 
-public class MovieInfoActivity extends Activity implements TrailerAdapter.TrailerItemClickListener{
+public class MovieInfoActivity extends Activity implements TrailerAdapter.TrailerItemClickListener {
 
     // Add butterknife thanks to the advices of the reviewer.
     @BindView(R.id.iv_cover)
@@ -49,20 +52,8 @@ public class MovieInfoActivity extends Activity implements TrailerAdapter.Traile
     @BindView(R.id.tv_ratings)
     TextView rating;
 
-    /*
-      ONCLICK
-   */
-    @Override
-    public void onClick(int clickedPosition) {
-        Context context = getApplicationContext();
-        Toast.makeText(context, "Hello", Toast.LENGTH_SHORT).show();
-        //Intent i = new Intent(this, MovieInfoActivity.class);
 
-        //i.putExtra("MOVIE_INFO", movieData.get(clickedPosition));
-        //startActivity(i);
-    }
-
-
+    ArrayList<Trailer> trailerArrayList;
     public List<Review> reviewData;
     private ReviewAdapter mReviewAdapter;
     private static final int NUM_LIST_ITEMS = 100;
@@ -72,6 +63,10 @@ public class MovieInfoActivity extends Activity implements TrailerAdapter.Traile
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_info);
+
+        final TrailerAdapter.TrailerItemClickListener listener = this;
+
+        trailerArrayList = new ArrayList<>();
 
         Bundle b = getIntent().getExtras();
         Movies movie =
@@ -92,14 +87,20 @@ public class MovieInfoActivity extends Activity implements TrailerAdapter.Traile
                 ApiClient.getClient().create(ApiInterface.class);
 
 
+        final Context context = this;
+        ButterKnife.bind(this);
+
         Call<ReviewList> call = apiService.getReviews(essay, config.API_KEY);
         call.enqueue(new Callback<ReviewList>() {
+
             @Override
             public void onResponse(Call<ReviewList> call, Response<ReviewList> response) {
+
                 List<Review> reviewsResult = response.body().getReviews();
                 Log.v(TAG, "Reviews ok" + reviewsResult);
 
                 recyclerView.setAdapter(new ReviewAdapter(reviewsResult, getApplicationContext()));
+
 
 
                 /*if(reviewTV == null) {
@@ -117,8 +118,6 @@ public class MovieInfoActivity extends Activity implements TrailerAdapter.Traile
         });
 
 
-
-
         Call<TrailerList> call2 = apiService.getTrailers(essay, config.API_KEY);
         call2.enqueue(new Callback<TrailerList>() {
             @Override
@@ -126,9 +125,11 @@ public class MovieInfoActivity extends Activity implements TrailerAdapter.Traile
                 List<Trailer> results = response.body().getTrailers();
 
 
-                // recyclerViewTrailer.setAdapter(new TrailerAdapter(results, getApplicationContext(), TrailerAdapter.TrailerItemClickListener));
+                recyclerViewTrailer.setAdapter(new TrailerAdapter(getApplicationContext(), NUM_LIST_ITEMS, results, listener));
 
-
+                for (Trailer singleTrailer : response.body().getTrailers()) {
+                    trailerArrayList.add(singleTrailer);
+                }
             }
 
             @Override
@@ -138,8 +139,7 @@ public class MovieInfoActivity extends Activity implements TrailerAdapter.Traile
             }
         });
 
-        final Context context = this;
-        ButterKnife.bind(this);
+
         /*
             Put information
          */
@@ -167,12 +167,18 @@ public class MovieInfoActivity extends Activity implements TrailerAdapter.Traile
         synopsis.setText(movie.getSynopsis());
 
 
-        // P2 : Change to RatingBar
+
         rating.setText("Rating : " + String.valueOf(movie.getVote()) + " /10");
 
 
+    }
 
+    @Override
+    public void onTrailerItemClick(int clickedTrailerIndex) {
+        Context context = getApplicationContext();
+        String key = trailerArrayList.get(clickedTrailerIndex).getKey();
 
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(key)));
 
     }
 }

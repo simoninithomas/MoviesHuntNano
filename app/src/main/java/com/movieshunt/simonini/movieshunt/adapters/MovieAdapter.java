@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+
 import com.movieshunt.simonini.movieshunt.R;
 import com.movieshunt.simonini.movieshunt.models.Movies;
 import com.squareup.picasso.Picasso;
@@ -19,74 +20,39 @@ import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
-    private final PosterItemClickListener mOnClickListener;
+    // Specify how many views adapter hold
+    private int mNumberItems;
+    // Create a final private PosterItemClickListener called mOnClickListener
+    final private PosterItemClickListener mOnClickListener;
+
+    // Add an interface called PosterItemClickListener
+    // Within that interface, define a void method called onListItemClick that takes an int as a parameter
+
+    public interface PosterItemClickListener {
+        void onPosterItemClick(int clickedPosterIndex);
+    }
+
+    // Add a ListItemClickListener as a parameter to the constructor and store it in mOnClickListener
+
+    /*
+       ADAPTER
+    */
+
+    public MovieAdapter(Context context, int numberOfItems, List<Movies> movies, PosterItemClickListener listener) {
+        mNumberItems = numberOfItems;
+        mMovies = movies;
+        this.context = context;
+        mOnClickListener = listener;
+
+    }
+
+
+
+
+
     private Context context;
     private List<Movies> mMovies;
 
-
-    /*
-        RESPONDING TO CLICK ITEMS
-*/
-    // Step 1: Create an interface that will define our listener
-    public interface PosterItemClickListener {
-        // Method that takes an int as parameter
-        void onClick(int clickedItemIndex);
-
-    }
-
-    /*
-        VIEW HOLDER
-     */
-    // ViewHolders cache the references to the views that will be modified in the adapter.
-    // We create a class called MovieViewHolder that extends Recycler.ViewHolder
-    public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
-    {
-        //
-        // Create a ImageView variable called posterView
-        ImageView posterView;
-
-        // Create a constructor for MovieViewHolder that accepts a View called itemView as a parameter
-
-        public MovieViewHolder(View itemView) {
-            super(itemView);
-
-            // listItemNumberView = (TextView) itemView.findViewById(R.id.tv_title);
-            posterView = (ImageView) itemView.findViewById(R.id.tv_poster);
-            // Call setOnClickListener on the View passed into the constructor
-            // (use 'this' as the OnClickListener)
-            itemView.setOnClickListener(this);
-            Log.v("Call on movie viewhol", "");
-        }
-
-        // Override onClickMethod
-        @Override
-        public void onClick(View view) {
-            // Get the adapter position (item that was selected)
-            int clickedPosition = getAdapterPosition();
-            mOnClickListener.onClick(clickedPosition);
-
-            //Toast.makeText(context, arr[1], Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /*
-        ADAPTER
-     */
-    // Specify how many views adapter hold
-    private int mNumberItems;
-
-    // Store a member variable for the titles
-
-
-    // Populate that var in the constructor
-
-    public MovieAdapter(Context context, int numberOfItems, ArrayList<Movies> movies, PosterItemClickListener listener) {
-        mNumberItems = numberOfItems;
-        mMovies = movies;
-        mOnClickListener = listener;
-        this.context = context;
-
-    }
 
     // Override our 3 functions
     // onCreateViewHolder()
@@ -145,24 +111,40 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         return mNumberItems;
     }
 
-    //
-
+      /*
+   VIEW HOLDER
+*/
 
     /**
-     * This method is used to set the movie data on a MovieAdapter if we've already
-     * created one. This is handy when we get new data from the web but don't want to create a
-     * new ForecastAdapter to display it.
-     *
-     * @param movieData The new moviesData data to be displayed.
+     * Cache of the children views for a list item.
+     */
+    class MovieViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
 
-    public void setMovieData(List<Movie> movieData) {
-    mMovies = movieData;
-    notifyDataSetChanged();
-    movieClicked = mMovies;
+            private String mItem;
+            // Create a ImageView variable called posterView
+            ImageView posterView;
 
 
-    }*/
+        /**
+         * Constructor for our ViewHolder. Within this constructor, we get a reference to our
+         * TextViews and set an onClickListener to listen for clicks. Those will be handled in the
+         * onClick method below.
+         *
+         */
+        public MovieViewHolder(View itemView) {
+            super(itemView);
 
+         // Call setOnClickListener on the View passed into the constructor (use 'this' as the OnClickListener)
 
+            posterView = (ImageView) itemView.findViewById(R.id.tv_poster);
+            itemView.setOnClickListener(this);
+        }
 
+        @Override
+        public void onClick(View v) {
+            int clickedPosition = getAdapterPosition();
+            mOnClickListener.onPosterItemClick(clickedPosition);
+        }
+    }
 }

@@ -3,22 +3,32 @@ package com.movieshunt.simonini.movieshunt;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.view.View;
 import android.widget.Toast;
 
 import com.movieshunt.simonini.movieshunt.adapters.MovieAdapter;
 import com.movieshunt.simonini.movieshunt.config.config;
+import com.movieshunt.simonini.movieshunt.data.MoviesContract;
 import com.movieshunt.simonini.movieshunt.models.Movies;
 import com.movieshunt.simonini.movieshunt.models.MoviesList;
 import com.movieshunt.simonini.movieshunt.network.ApiClient;
 import com.movieshunt.simonini.movieshunt.network.ApiInterface;
+import com.movieshunt.simonini.movieshunt.ConnectionStatusUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,21 +39,32 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PosterActivity extends Activity implements MovieAdapter.PosterItemClickListener {
+public class PosterActivity extends AppCompatActivity implements MovieAdapter.PosterItemClickListener,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int NUM_LIST_ITEMS = 100;
-    private MovieAdapter adapter;
 
     @BindView(R.id.rv_movies)
     RecyclerView mRecyclerView;
+    @BindView(R.id.no_data)
+    ConstraintLayout mNoData;
+
+    MovieAdapter mAdapter;
 
     ArrayList<Movies> moviesArrayList;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        final MovieAdapter.PosterItemClickListener listener = this;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_poster);
+        Context context = getApplicationContext();
 
+        // Verify that we have an internet connection
+        ConnectionStatusUtils.verifyConnection(context, findViewById(R.id.coordinatorLayout));
 
         // Get a reference of our RecyclerView from xml :
         // It allows us the do things like set the Adapter of the RecyclerView and toggle the
@@ -58,10 +79,12 @@ public class PosterActivity extends Activity implements MovieAdapter.PosterItemC
 
         moviesArrayList = new ArrayList<>();
 
-        getTopRatedCall(mRecyclerView);
 
+        ButterKnife.bind(this);
 
+        getTopRatedCall(mRecyclerView, mNoData);
 
+        mNoData.setVisibility(View.GONE);
 
 
     }
@@ -82,27 +105,40 @@ public class PosterActivity extends Activity implements MovieAdapter.PosterItemC
         ButterKnife.bind(this);
         switch (item.getItemId()) {
             case R.id.favorite:
-                //TODO: Implement the good function
-                //faforite();
+                getFavorites(mRecyclerView);
                 return true;
             case R.id.topRated:
-                getTopRatedCall(mRecyclerView);
+                getTopRatedCall(mRecyclerView, mNoData);
                 return true;
             case R.id.popular:
-                getPopularCall(mRecyclerView);
+                getPopularCall(mRecyclerView, mNoData);
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    /*
+        CALL: get favorites
+     */
+
+    public void getFavorites(RecyclerView mRecyclerView) {
+
+        getSupportLoaderManager().initLoader(0, null, this);
+
+    }
+
 
     /*
         CALL: get top rated movies
      */
-    public void getTopRatedCall(RecyclerView mRecyclerView) {
+    public void getTopRatedCall(RecyclerView mRecyclerView, ConstraintLayout mNoData) {
         final RecyclerView recyclerView = mRecyclerView;
         final MovieAdapter.PosterItemClickListener listener = this;
+
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mNoData.setVisibility(View.GONE);
+
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
 
@@ -113,9 +149,10 @@ public class PosterActivity extends Activity implements MovieAdapter.PosterItemC
                 final List<Movies> movies = response.body().getResults();
                 moviesArrayList.clear();
                 List<Movies> moviesResult = movies;
-                for (Movies singleMovie : response.body().getResults()){
+                for (Movies singleMovie : response.body().getResults()) {
                     moviesArrayList.add(singleMovie);
                 }
+
                 recyclerView.setAdapter(new MovieAdapter(getApplicationContext(), NUM_LIST_ITEMS, movies, listener));
             }
 
@@ -128,12 +165,17 @@ public class PosterActivity extends Activity implements MovieAdapter.PosterItemC
 
     }
 
+
     /*
        CALL: get popular
     */
-    public void getPopularCall(RecyclerView mRecyclerView) {
+    public void getPopularCall(RecyclerView mRecyclerView, ConstraintLayout mNoData) {
         final RecyclerView recyclerView = mRecyclerView;
         final MovieAdapter.PosterItemClickListener listener = this;
+
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mNoData.setVisibility(View.GONE);
+
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
 
@@ -144,11 +186,10 @@ public class PosterActivity extends Activity implements MovieAdapter.PosterItemC
                 final List<Movies> movies = response.body().getResults();
                 moviesArrayList.clear();
                 List<Movies> moviesResult = movies;
-                for (Movies singleMovie : response.body().getResults()){
+                for (Movies singleMovie : response.body().getResults()) {
                     moviesArrayList.add(singleMovie);
                 }
                 recyclerView.setAdapter(new MovieAdapter(getApplicationContext(), NUM_LIST_ITEMS, movies, listener));
-
 
             }
 
@@ -166,6 +207,73 @@ public class PosterActivity extends Activity implements MovieAdapter.PosterItemC
         Intent i = new Intent(this, MovieInfoActivity.class);
         i.putExtra("MOVIE_INFO", moviesArrayList.get(clickedPosterIndex));
         startActivity(i);
+    }
+
+    @Override
+    public void onResume() {
+        Context context = getApplicationContext();
+        super.onResume();  // Always call the superclass method first
+
+        // Verify that we have an internet connection
+        ConnectionStatusUtils.verifyConnection(context, findViewById(R.id.coordinatorLayout));
+
+    }
+
+
+    // FAVORITES LOADER
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        return new android.support.v4.content.CursorLoader(getApplicationContext(),
+                MoviesContract.FavoriteEntry.CONTENT_URI,
+                null,
+                "isFavorite = 1",
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor favoriteCursor) {
+        
+        final RecyclerView recyclerView = mRecyclerView;
+        final MovieAdapter.PosterItemClickListener listener = this;
+        final List<Movies> movies = new ArrayList<Movies>();
+
+
+        if (favoriteCursor != null) {
+            favoriteCursor.moveToFirst();
+            while (favoriteCursor.moveToNext()) {
+                Movies movie = new Movies(favoriteCursor.getInt(favoriteCursor.getColumnIndex("id")),
+                        favoriteCursor.getString(favoriteCursor.getColumnIndex("title")),
+                        favoriteCursor.getString(favoriteCursor.getColumnIndex("poster_path")),
+                        favoriteCursor.getString(favoriteCursor.getColumnIndex("backdrop_path")),
+                        favoriteCursor.getString(favoriteCursor.getColumnIndex("release_date")),
+                        favoriteCursor.getDouble(favoriteCursor.getColumnIndex("vote_average")),
+                        favoriteCursor.getString(favoriteCursor.getColumnIndex("overview")));
+                movies.add(movie);
+
+            }
+            favoriteCursor.close();
+
+
+            mRecyclerView.setAdapter(new MovieAdapter(getApplicationContext(), NUM_LIST_ITEMS, movies, listener));
+
+        } else {
+            mRecyclerView.setVisibility(View.GONE);
+            mNoData.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // This is called when the last Cursor provided to onLoadFinished()
+        // above is about to be closed.  We need to make sure we are no
+        // longer using it.
+        loader = null;
+
+
     }
 
 

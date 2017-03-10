@@ -10,145 +10,121 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
 import com.movieshunt.simonini.movieshunt.R;
 import com.movieshunt.simonini.movieshunt.models.Trailer;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
-
-public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHolder>{
+public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHolder> {
 
     List<Trailer> mTrailers;
-
     private Context context;
-
-
-
-
     // Specify how many views adapter hold
-        private int mNumberItems;
-        // Create a final private PosterItemClickListener called mOnClickListener
-        final private TrailerItemClickListener mOnClickListener;
+    private int mNumberItems;
+    // Create a final private PosterItemClickListener called mOnClickListener
+    final private TrailerItemClickListener mOnClickListener;
 
-        // Add an interface called PosterItemClickListener
-        // Within that interface, define a void method called onListItemClick that takes an int as a parameter
+    // Add an interface called PosterItemClickListener
+    // Within that interface, define a void method called onListItemClick that takes an int as a parameter
+    public interface TrailerItemClickListener {
+        void onTrailerItemClick(int clickedTrailerIndex);
+    }
 
-        public interface TrailerItemClickListener {
-            void onTrailerItemClick(int clickedTrailerIndex);
-        }
-
-        // Add a ListItemClickListener as a parameter to the constructor and store it in mOnClickListener
-
+    // Add a ListItemClickListener as a parameter to the constructor and store it in mOnClickListener
     /*
        ADAPTER
     */
 
-        public TrailerAdapter(Context context, int numberOfItems, List<Trailer> trailers, TrailerItemClickListener listener) {
-            mNumberItems = numberOfItems;
-            mTrailers = trailers;
-            this.context = context;
-            mOnClickListener = listener;
+    public TrailerAdapter(Context context, int numberOfItems, List<Trailer> trailers, TrailerItemClickListener listener) {
+        mNumberItems = numberOfItems;
+        mTrailers = trailers;
+        this.context = context;
+        mOnClickListener = listener;
+    }
 
-        }
+    // Override our 3 functions
+    // onCreateViewHolder()
+    @Override
+    public TrailerViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        Log.v("onCreateViewHolder", "onCreateViewHolder is called !");
+        Context context = viewGroup.getContext();
+        int layoutIdForListItem = R.layout.trailer;
 
-        // Override our 3 functions
-        // onCreateViewHolder()
-        @Override
-        public TrailerViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-            Log.v("onCreateViewHolder", "onCreateViewHolder is called !");
-            Context context = viewGroup.getContext();
-            int layoutIdForListItem = R.layout.trailer;
+        // Inflate our new item view using a LayoutInflater. It takes the ID of layout in xml.
+        // Then --> inflates or converts this collection of view groups and views.
+        LayoutInflater inflater = LayoutInflater.from(context);
 
-            // Inflate our new item view using a LayoutInflater. It takes the ID of layout in xml.
-            // Then --> inflates or converts this collection of view groups and views.
-            LayoutInflater inflater = LayoutInflater.from(context);
+        // Set to false, so that the inflated layout will not be
+        // immediately attached to its parent viewgroup.
+        View view = inflater.inflate(layoutIdForListItem, viewGroup, false);
+        TrailerViewHolder viewHolder = new TrailerViewHolder(view);
+        return viewHolder;
 
-
-            // Set to false, so that the inflated layout will not be
-            // immediately attached to its parent viewgroup.
-            View view = inflater.inflate(layoutIdForListItem, viewGroup, false);
-            TrailerViewHolder viewHolder = new TrailerViewHolder(view);
-
-            return viewHolder;
-
-
-        }
+    }
 
 
-        //onBindViewHolder()
-        @Override
-        public void onBindViewHolder(TrailerViewHolder holder, int position) {
+    //onBindViewHolder()
+    @Override
+    public void onBindViewHolder(TrailerViewHolder holder, int position) {
 
-            Log.v("We inflate ?", "Seems yes");
+        // Get the data model based on position
+        Trailer trailer = mTrailers.get(position);
 
-            // Get the data model based on position
+        // Set item views based on your views and data model
+        ImageView trailerImage = holder.trailerImage;
 
-            Trailer trailer = mTrailers.get(position);
+        Picasso.with(context)
+                .load(trailer.getTrailerImage())
+                .placeholder(R.drawable.load)
+                .error(R.drawable.ic_picture_error)
+                .into(trailerImage);
 
-            // Set item views based on your views and data model
-            ImageView trailerImage = holder.trailerImage;
+        holder.trailerTitle.setText(trailer.getVideoTitle());
 
-            Picasso.with(context)
-                    .load(trailer.getTrailerImage())
-                    .placeholder(R.drawable.load)
-                    .error(R.drawable.ic_picture_error)
-                    .into(trailerImage);
+    }
 
-            holder.trailerTitle.setText(trailer.getVideoTitle());
-
-        }
-
-        //getItemCount() : returns the mNumberItems var
-        @Override
-        public int getItemCount() {
-            mNumberItems = mTrailers.size();
-            return mNumberItems;
-        }
+    //getItemCount() : returns the mNumberItems var
+    @Override
+    public int getItemCount() {
+        mNumberItems = mTrailers.size();
+        return mNumberItems;
+    }
 
       /*
-   VIEW HOLDER
-*/
+        VIEW HOLDER
+       */
+
+    /**
+     * Cache of the children views for a list item.
+     */
+    class TrailerViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
+
+        private String mItem;
+        LinearLayout trailersLayout;
+        TextView trailerTitle;
+        ImageView trailerImage;
 
         /**
-         * Cache of the children views for a list item.
+         * Constructor for our ViewHolder. Within this constructor, we get a reference to our
+         * TextViews and set an onClickListener to listen for clicks. Those will be handled in the
+         * onClick method below.
          */
-        class TrailerViewHolder extends RecyclerView.ViewHolder
-                implements View.OnClickListener {
+        public TrailerViewHolder(View itemView) {
+            super(itemView);
 
-            private String mItem;
-            // Create a ImageView variable called posterView
-            ImageView imageView;
+            // Call setOnClickListener on the View passed into the constructor (use 'this' as the OnClickListener)
+            trailersLayout = (LinearLayout) itemView.findViewById(R.id.ll_trailer);
+            trailerImage = (ImageView) itemView.findViewById(R.id.iv_trailer);
+            trailerTitle = (TextView) itemView.findViewById(R.id.tv_video_title);
+            itemView.setOnClickListener(this);
+        }
 
-            // Create a ImageView variable called posterView
-            LinearLayout trailersLayout;
-            TextView trailerTitle;
-            ImageView trailerImage;
-
-            /**
-             * Constructor for our ViewHolder. Within this constructor, we get a reference to our
-             * TextViews and set an onClickListener to listen for clicks. Those will be handled in the
-             * onClick method below.
-             *
-             */
-            public TrailerViewHolder(View itemView) {
-                super(itemView);
-
-                // Call setOnClickListener on the View passed into the constructor (use 'this' as the OnClickListener)
-
-
-                trailersLayout = (LinearLayout) itemView.findViewById(R.id.ll_trailer);
-                trailerImage = (ImageView) itemView.findViewById(R.id.iv_trailer);
-                trailerTitle = (TextView) itemView.findViewById(R.id.tv_video_title);
-                itemView.setOnClickListener(this);
-            }
-
-            @Override
-            public void onClick(View v) {
-                int clickedPosition = getAdapterPosition();
-                mOnClickListener.onTrailerItemClick(clickedPosition);
-            }
+        @Override
+        public void onClick(View v) {
+            int clickedPosition = getAdapterPosition();
+            mOnClickListener.onTrailerItemClick(clickedPosition);
         }
     }
+}

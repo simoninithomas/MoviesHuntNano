@@ -1,23 +1,17 @@
 package com.movieshunt.simonini.movieshunt.adapters;
 
-
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 
 import com.movieshunt.simonini.movieshunt.R;
 import com.movieshunt.simonini.movieshunt.models.Review;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,7 +20,6 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     private List<Review> reviews;
     private int rowLayout;
     private Context context;
-
 
     public static class ReviewViewHolder extends RecyclerView.ViewHolder {
         LinearLayout reviewsLayout;
@@ -43,14 +36,12 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
     public ReviewAdapter(List<Review> reviews, Context context) {
         this.reviews = reviews;
-
         this.context = context;
     }
 
     @Override
     public ReviewAdapter.ReviewViewHolder onCreateViewHolder(ViewGroup parent,
                                                              int viewType) {
-
         Context context = parent.getContext();
         int layoutIdForListItem = R.layout.review;
 
@@ -59,18 +50,14 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(layoutIdForListItem, parent, false);
         ReviewViewHolder viewHolder = new ReviewViewHolder(view);
-
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(ReviewViewHolder holder, final int position) {
-        Log.v("ARE WE INFLATE ?", "Seems yes");
 
         // Get the data model based on position
-
         Review review = reviews.get(position);
-
         holder.review.setText(reviews.get(position).getContent());
         holder.author.setText(reviews.get(position).getAuthor());
 

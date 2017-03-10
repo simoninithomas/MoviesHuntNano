@@ -2,7 +2,6 @@ package com.movieshunt.simonini.movieshunt.adapters;
 
 
 import android.content.Context;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,12 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-
 import com.movieshunt.simonini.movieshunt.R;
 import com.movieshunt.simonini.movieshunt.models.Movies;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
@@ -25,34 +22,25 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     // Create a final private PosterItemClickListener called mOnClickListener
     final private PosterItemClickListener mOnClickListener;
 
+    private Context context;
+    private List<Movies> mMovies;
+
     // Add an interface called PosterItemClickListener
     // Within that interface, define a void method called onListItemClick that takes an int as a parameter
-
     public interface PosterItemClickListener {
         void onPosterItemClick(int clickedPosterIndex);
     }
 
     // Add a ListItemClickListener as a parameter to the constructor and store it in mOnClickListener
-
     /*
        ADAPTER
     */
-
     public MovieAdapter(Context context, int numberOfItems, List<Movies> movies, PosterItemClickListener listener) {
         mNumberItems = numberOfItems;
         mMovies = movies;
         this.context = context;
         mOnClickListener = listener;
-
     }
-
-
-
-
-
-    private Context context;
-    private List<Movies> mMovies;
-
 
     // Override our 3 functions
     // onCreateViewHolder()
@@ -71,27 +59,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         // immediately attached to its parent viewgroup.
         View view = inflater.inflate(layoutIdForListItem, viewGroup, false);
         MovieViewHolder viewHolder = new MovieViewHolder(view);
-
         return viewHolder;
-
-
     }
-
 
     //onBindViewHolder()
     @Override
     public void onBindViewHolder(MovieViewHolder holder, int position) {
 
-        Log.v("We inflate ?", "Seems yes");
-
         // Get the data model based on position
-
         Movies movie = mMovies.get(position);
-
-        // Set item views based on your views and data model
-        //TextView textView = holder.listItemNumberView;
-        //textView.setText(movie.getMovieTitle());
-
 
         // Set item views based on your views and data model
         ImageView imageView = holder.posterView;
@@ -111,32 +87,28 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         return mNumberItems;
     }
 
-      /*
-   VIEW HOLDER
-*/
+    /*
+        VIEW HOLDER
+    */
 
     /**
      * Cache of the children views for a list item.
      */
-    class MovieViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
+    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-            private String mItem;
-            // Create a ImageView variable called posterView
-            ImageView posterView;
-
+        private String mItem;
+        // Create a ImageView variable called posterView
+        ImageView posterView;
 
         /**
          * Constructor for our ViewHolder. Within this constructor, we get a reference to our
          * TextViews and set an onClickListener to listen for clicks. Those will be handled in the
          * onClick method below.
-         *
          */
         public MovieViewHolder(View itemView) {
             super(itemView);
 
-         // Call setOnClickListener on the View passed into the constructor (use 'this' as the OnClickListener)
-
+            // Call setOnClickListener on the View passed into the constructor (use 'this' as the OnClickListener)
             posterView = (ImageView) itemView.findViewById(R.id.tv_poster);
             itemView.setOnClickListener(this);
         }

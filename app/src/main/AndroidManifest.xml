@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.movieshunt.simonini.movieshunt">
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,11 +18,13 @@
         </activity>
         <activity android:name=".PosterActivity"></activity>
         <activity android:name=".MovieInfoActivity" android:parentActivityName=".PosterActivity"></activity>
+
+        <provider
+            android:authorities="com.movieshunt.simonini.movieshunt"
+            android:name="com.movieshunt.simonini.movieshunt.data.MoviesContentProvider"
+            android:exported="false"/>
     </application>
 
-    <provider
-        android:authorities="com.movieshunt.simonini.movieshunt"
-        android:name="com.movieshunt.simonini.movieshunt.data.MoviesContentProvider"
-        android:exported="false"/>
+
 
 </manifest>

@@ -9,4 +9,11 @@
     <string name="favorites_button">Add to favorites</string>
     <string name="reviews">Reviews</string>
 
+    <string name="share">Share</string>
+    <string name="popular">Popular</string>
+    <string name="topRated">Top Rated</string>
+    <string name="favorite">Favorites</string>
+    <string name="no_favorite">You have no favorites movies</string>
+
+
 </resources>

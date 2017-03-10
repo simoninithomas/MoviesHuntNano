@@ -3,25 +3,20 @@
 
     <item
         android:id="@+id/favorite"
-        android:icon="@android:drawable/ic_menu_save"
-        android:title="Favorite"
+        android:icon="@drawable/ic_favorite_white_24px"
+        android:title="@string/favorite"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/topRated"
-        android:icon="@android:drawable/ic_menu_save"
-        android:title="Top Rated"
+        android:icon="@drawable/ic_reorder_white_24px"
+        android:title="@string/topRated"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/popular"
-        android:icon="@android:drawable/ic_menu_save"
-        android:title="Popular"
+        android:icon="@drawable/ic_star_white_24px"
+        android:title="@string/popular"
         app:showAsAction="ifRoom" />
-
-    <!--<item
-        android:id="@+id/action_settings"
-        android:title="actions"
-        app:showAsAction="never" />-->
 
 </menu>

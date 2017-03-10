@@ -25,8 +25,6 @@ public interface ApiInterface {
     Call<MoviesList> getPopular(@Query("api_key") String apiKey);
 
 
-
-
     @GET("movie/{id}/reviews")
     Call<ReviewList> getReviews(@Path("id") String id, @Query("api_key") String apiKey);
 

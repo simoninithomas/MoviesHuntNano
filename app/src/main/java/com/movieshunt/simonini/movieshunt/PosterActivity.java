@@ -234,7 +234,7 @@ public class PosterActivity extends AppCompatActivity implements MovieAdapter.Po
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor favoriteCursor) {
-        
+
         final RecyclerView recyclerView = mRecyclerView;
         final MovieAdapter.PosterItemClickListener listener = this;
         final List<Movies> movies = new ArrayList<Movies>();

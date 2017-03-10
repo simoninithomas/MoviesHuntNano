@@ -237,13 +237,14 @@ public class PosterActivity extends AppCompatActivity implements MovieAdapter.Po
 
         final RecyclerView recyclerView = mRecyclerView;
         final MovieAdapter.PosterItemClickListener listener = this;
-        final List<Movies> movies = new ArrayList<Movies>();
+         List<Movies>  movies = null;
+        movies = new ArrayList<Movies>();
 
 
         if (favoriteCursor != null) {
+            //while () {
             favoriteCursor.moveToFirst();
-            while (favoriteCursor.moveToNext()) {
-                Movies movie = new Movies(favoriteCursor.getInt(favoriteCursor.getColumnIndex("id")),
+                Movies movie = new Movies(favoriteCursor.getInt(favoriteCursor.getColumnIndex("movie_id")),
                         favoriteCursor.getString(favoriteCursor.getColumnIndex("title")),
                         favoriteCursor.getString(favoriteCursor.getColumnIndex("poster_path")),
                         favoriteCursor.getString(favoriteCursor.getColumnIndex("backdrop_path")),
@@ -252,8 +253,8 @@ public class PosterActivity extends AppCompatActivity implements MovieAdapter.Po
                         favoriteCursor.getString(favoriteCursor.getColumnIndex("overview")));
                 movies.add(movie);
 
-            }
-            favoriteCursor.close();
+            //}
+            //favoriteCursor.close();
 
 
             mRecyclerView.setAdapter(new MovieAdapter(getApplicationContext(), NUM_LIST_ITEMS, movies, listener));

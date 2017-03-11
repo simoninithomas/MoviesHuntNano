@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.movieshunt.simonini.movieshunt.adapters.MovieAdapter;
+import com.movieshunt.simonini.movieshunt.adapters.MovieCursorAdapter;
 import com.movieshunt.simonini.movieshunt.config.config;
 import com.movieshunt.simonini.movieshunt.data.MoviesContract;
 import com.movieshunt.simonini.movieshunt.models.Movies;
@@ -40,7 +41,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PosterActivity extends AppCompatActivity implements MovieAdapter.PosterItemClickListener,
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, MovieCursorAdapter.PosterItemClickListener {
 
     private static final int NUM_LIST_ITEMS = 100;
 
@@ -49,10 +50,10 @@ public class PosterActivity extends AppCompatActivity implements MovieAdapter.Po
     @BindView(R.id.no_data)
     ConstraintLayout mNoData;
 
-    MovieAdapter mAdapter;
-
     ArrayList<Movies> moviesArrayList;
 
+
+    MovieCursorAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +86,6 @@ public class PosterActivity extends AppCompatActivity implements MovieAdapter.Po
         getTopRatedCall(mRecyclerView, mNoData);
 
         mNoData.setVisibility(View.GONE);
-
 
     }
 
@@ -220,10 +220,10 @@ public class PosterActivity extends AppCompatActivity implements MovieAdapter.Po
     }
 
 
+
     // FAVORITES LOADER
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
         return new android.support.v4.content.CursorLoader(getApplicationContext(),
                 MoviesContract.FavoriteEntry.CONTENT_URI,
                 null,
@@ -235,15 +235,17 @@ public class PosterActivity extends AppCompatActivity implements MovieAdapter.Po
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor favoriteCursor) {
 
-        final RecyclerView recyclerView = mRecyclerView;
+       /* final RecyclerView recyclerView = mRecyclerView;
         final MovieAdapter.PosterItemClickListener listener = this;
          List<Movies>  movies = null;
         movies = new ArrayList<Movies>();
 
 
         if (favoriteCursor != null) {
-            //while () {
-            favoriteCursor.moveToFirst();
+            int i = 0;
+            int count = favoriteCursor.getCount();
+            for(i = 0; i < count; i++) {
+                favoriteCursor.moveToNext();
                 Movies movie = new Movies(favoriteCursor.getInt(favoriteCursor.getColumnIndex("movie_id")),
                         favoriteCursor.getString(favoriteCursor.getColumnIndex("title")),
                         favoriteCursor.getString(favoriteCursor.getColumnIndex("poster_path")),
@@ -253,16 +255,17 @@ public class PosterActivity extends AppCompatActivity implements MovieAdapter.Po
                         favoriteCursor.getString(favoriteCursor.getColumnIndex("overview")));
                 movies.add(movie);
 
-            //}
-            //favoriteCursor.close();
-
-
+            }
             mRecyclerView.setAdapter(new MovieAdapter(getApplicationContext(), NUM_LIST_ITEMS, movies, listener));
 
         } else {
             mRecyclerView.setVisibility(View.GONE);
             mNoData.setVisibility(View.VISIBLE);
-        }
+        }*/
+
+
+
+        mAdapter.swapCursor(favoriteCursor);
 
     }
 

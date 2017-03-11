@@ -1,13 +1,22 @@
 package com.movieshunt.simonini.movieshunt.adapters;
-
-
 import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;import android.content.Context;
+import android.database.Cursor;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
+import java.util.List;
+
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.movieshunt.simonini.movieshunt.R;
 import com.movieshunt.simonini.movieshunt.models.Movies;
@@ -15,7 +24,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
+
+public abstract class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAdapter.ViewHolder> {
 
     // Specify how many views adapter hold
     private int mNumberItems;
@@ -36,17 +46,20 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     /*
        ADAPTER
     */
-    public MovieAdapter(Context context, int numberOfItems, List<Movies> movies, PosterItemClickListener listener) {
+    public MovieCursorAdapter(Context context, Cursor cursor, int numberOfItems, List<Movies> movies, PosterItemClickListener listener) {
+        super(context,cursor);
         mNumberItems = numberOfItems;
         mMovies = movies;
         this.context = context;
         mOnClickListener = listener;
     }
 
+
+
     // Override our 3 functions
     // onCreateViewHolder()
     @Override
-    public MovieViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         Log.v("onCreateViewHolder", "onCreateViewHolder is called !");
         Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.poster;
@@ -59,13 +72,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         // Set to false, so that the inflated layout will not be
         // immediately attached to its parent viewgroup.
         View view = inflater.inflate(layoutIdForListItem, viewGroup, false);
-        MovieViewHolder viewHolder = new MovieViewHolder(view);
+        ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
 
     //onBindViewHolder()
     @Override
-    public void onBindViewHolder(MovieViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
 
         // Get the data model based on position
         Movies movie = mMovies.get(position);
@@ -95,7 +108,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     /**
      * Cache of the children views for a list item.
      */
-    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private String mItem;
         // Create a ImageView variable called posterView
@@ -106,7 +120,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
          * TextViews and set an onClickListener to listen for clicks. Those will be handled in the
          * onClick method below.
          */
-        public MovieViewHolder(View itemView) {
+        public ViewHolder (View itemView) {
             super(itemView);
 
             // Call setOnClickListener on the View passed into the constructor (use 'this' as the OnClickListener)

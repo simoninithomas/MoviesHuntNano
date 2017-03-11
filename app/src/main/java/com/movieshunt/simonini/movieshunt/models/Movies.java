@@ -1,5 +1,6 @@
 package com.movieshunt.simonini.movieshunt.models;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -32,6 +33,17 @@ public class Movies implements Parcelable {
         this.release_date = release_date;
         this.vote_average = vote_average;
         this.overview = overview;
+    }
+
+    public static Movies fromCursor(Cursor cursor) {
+        return new Movies(cursor.getInt(cursor.getColumnIndex("movie_id")),
+                cursor.getString(cursor.getColumnIndex("title")),
+                cursor.getString(cursor.getColumnIndex("poster_path")),
+                cursor.getString(cursor.getColumnIndex("backdrop_path")),
+                cursor.getString(cursor.getColumnIndex("release_date")),
+                cursor.getDouble(cursor.getColumnIndex("vote_average")),
+                cursor.getString(cursor.getColumnIndex("overview")));
+
     }
 
     public int getId() {

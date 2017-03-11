@@ -279,7 +279,7 @@ public class MovieInfoActivity extends AppCompatActivity implements TrailerAdapt
         }.execute();
     }
 
-    // DELETE FROM FAVORITE
+    // NoMoreFavorite
     public void deleteFavorite(Movies mMovieSelected) {
         // Get Movie's id
         final Movies movieSelected = mMovieSelected;

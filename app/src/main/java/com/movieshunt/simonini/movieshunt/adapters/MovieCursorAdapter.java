@@ -25,7 +25,8 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 
-public abstract class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAdapter.ViewHolder> {
+
+public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAdapter.ViewHolder>{
 
     // Specify how many views adapter hold
     private int mNumberItems;
@@ -46,10 +47,9 @@ public abstract class MovieCursorAdapter extends CursorRecyclerViewAdapter<Movie
     /*
        ADAPTER
     */
-    public MovieCursorAdapter(Context context, Cursor cursor, int numberOfItems, List<Movies> movies, PosterItemClickListener listener) {
+    public MovieCursorAdapter(Context context, Cursor cursor, int numberOfItems, PosterItemClickListener listener) {
         super(context,cursor);
         mNumberItems = numberOfItems;
-        mMovies = movies;
         this.context = context;
         mOnClickListener = listener;
     }
@@ -78,7 +78,9 @@ public abstract class MovieCursorAdapter extends CursorRecyclerViewAdapter<Movie
 
     //onBindViewHolder()
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position, Cursor cursor) {
+
+        Movies movies = Movies.fromCursor(cursor);
 
         // Get the data model based on position
         Movies movie = mMovies.get(position);
@@ -87,7 +89,7 @@ public abstract class MovieCursorAdapter extends CursorRecyclerViewAdapter<Movie
         ImageView imageView = holder.posterView;
 
         Picasso.with(context)
-                .load(movie.getPoster())
+                .load(movies.getPoster())
                 .placeholder(R.drawable.load)
                 .error(R.drawable.ic_picture_error)
                 .into(imageView);
@@ -134,4 +136,5 @@ public abstract class MovieCursorAdapter extends CursorRecyclerViewAdapter<Movie
             mOnClickListener.onPosterItemClick(clickedPosition);
         }
     }
+
 }

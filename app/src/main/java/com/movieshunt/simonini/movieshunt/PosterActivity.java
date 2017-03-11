@@ -52,8 +52,8 @@ public class PosterActivity extends AppCompatActivity implements MovieAdapter.Po
 
     ArrayList<Movies> moviesArrayList;
 
-
     MovieCursorAdapter mAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +87,7 @@ public class PosterActivity extends AppCompatActivity implements MovieAdapter.Po
 
         mNoData.setVisibility(View.GONE);
 
-    }
+        }
 
     /*
        MENU
@@ -234,9 +234,9 @@ public class PosterActivity extends AppCompatActivity implements MovieAdapter.Po
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor favoriteCursor) {
-
+        final MovieCursorAdapter.PosterItemClickListener listener = this;
        /* final RecyclerView recyclerView = mRecyclerView;
-        final MovieAdapter.PosterItemClickListener listener = this;
+
          List<Movies>  movies = null;
         movies = new ArrayList<Movies>();
 
@@ -264,7 +264,6 @@ public class PosterActivity extends AppCompatActivity implements MovieAdapter.Po
         }*/
 
 
-
         mAdapter.swapCursor(favoriteCursor);
 
     }
@@ -275,7 +274,7 @@ public class PosterActivity extends AppCompatActivity implements MovieAdapter.Po
         // This is called when the last Cursor provided to onLoadFinished()
         // above is about to be closed.  We need to make sure we are no
         // longer using it.
-        loader = null;
+        mAdapter.swapCursor(null);
 
 
     }

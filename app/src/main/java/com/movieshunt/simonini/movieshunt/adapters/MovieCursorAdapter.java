@@ -26,7 +26,9 @@ import java.util.List;
 
 
 
-public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAdapter.ViewHolder>{
+public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAdapter.ViewHolder> implements
+
+{
 
     // Specify how many views adapter hold
     private int mNumberItems;
@@ -94,6 +96,7 @@ public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAda
                 .error(R.drawable.ic_picture_error)
                 .into(imageView);
 
+
     }
 
     //getItemCount() : returns the mNumberItems var
@@ -113,6 +116,7 @@ public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAda
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+
         private String mItem;
         // Create a ImageView variable called posterView
         ImageView posterView;
@@ -129,6 +133,7 @@ public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAda
             posterView = (ImageView) itemView.findViewById(R.id.tv_poster);
             itemView.setOnClickListener(this);
         }
+
 
         @Override
         public void onClick(View v) {

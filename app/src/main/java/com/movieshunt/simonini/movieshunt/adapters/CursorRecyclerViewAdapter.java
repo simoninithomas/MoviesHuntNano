@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.widget.Toast;
 
 // A BIG THANKS TO skyfish.jy@gmail.com
 // @: https://gist.github.com/skyfishjy/443b7448f59be978bc59

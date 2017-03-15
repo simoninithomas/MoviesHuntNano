@@ -19,7 +19,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.movieshunt.simonini.movieshunt.adapters.MovieAdapter;
 import com.movieshunt.simonini.movieshunt.adapters.MovieCursorAdapter;
@@ -243,9 +242,8 @@ public class PosterActivity extends AppCompatActivity implements MovieAdapter.Po
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor favoriteCursor) {
         if(favoriteCursor.moveToFirst()){
-            Toast.makeText(this, favoriteCursor.toString(), Toast.LENGTH_SHORT).show();
             // create adapter
-            this.mAdapter = new MovieCursorAdapter(getApplicationContext(), favoriteCursor, movies, NUM_LIST_ITEMS, this);
+            this.mAdapter = new MovieCursorAdapter(getApplicationContext(), favoriteCursor, this);
             this.mAdapter.swapCursor(favoriteCursor);
 
         }

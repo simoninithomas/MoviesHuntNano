@@ -38,7 +38,6 @@ public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAda
     final private PosterItemClickListener mOnClickListener;
 
     private Context context;
-    private List<Movies> mMovies;
 
     // Add an interface called PosterItemClickListener
     // Within that interface, define a void method called onListItemClick that takes an int as a parameter
@@ -50,10 +49,8 @@ public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAda
     /*
        ADAPTER
     */
-    public MovieCursorAdapter(Context context, Cursor cursor,  List<Movies> movies, int numberOfItems, PosterItemClickListener listener) {
+    public MovieCursorAdapter(Context context, Cursor cursor, PosterItemClickListener listener) {
         super(context,cursor);
-        mMovies = movies;
-        mNumberItems = numberOfItems;
         this.context = context;
         mOnClickListener = listener;
     }
@@ -101,11 +98,18 @@ public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAda
 
     }
 
+
     //getItemCount() : returns the mNumberItems var
     @Override
     public int getItemCount() {
-      mNumberItems = mMovies.size();
-      return mNumberItems;
+        Log.v("Count", "Get item count called");
+        /*mNumberItems = mMovies.size();
+        String count = String.valueOf(mNumberItems);
+        Log.v("Count", count);
+        return mNumberItems;*/
+        int itemCount = getItemCount();
+
+        return itemCount;
     }
 
     /*

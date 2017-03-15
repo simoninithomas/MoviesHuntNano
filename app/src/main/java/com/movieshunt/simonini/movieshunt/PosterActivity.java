@@ -52,13 +52,18 @@ public class PosterActivity extends AppCompatActivity implements MovieAdapter.Po
 
     ArrayList<Movies> moviesArrayList;
 
-    MovieCursorAdapter mAdapter;
+    List<Movies> movies;
 
+    private MovieCursorAdapter mAdapter;
+
+    Cursor cursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         final MovieAdapter.PosterItemClickListener listener = this;
+
+        final MovieCursorAdapter.PosterItemClickListener listenerCursor = this;
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_poster);
@@ -86,6 +91,7 @@ public class PosterActivity extends AppCompatActivity implements MovieAdapter.Po
         getTopRatedCall(mRecyclerView, mNoData);
 
         mNoData.setVisibility(View.GONE);
+
 
         }
 
@@ -124,7 +130,8 @@ public class PosterActivity extends AppCompatActivity implements MovieAdapter.Po
 
     public void getFavorites(RecyclerView mRecyclerView) {
 
-        getSupportLoaderManager().initLoader(0, null, this);
+
+        getSupportLoaderManager().restartLoader(0, null, this);
 
     }
 
@@ -221,51 +228,31 @@ public class PosterActivity extends AppCompatActivity implements MovieAdapter.Po
 
 
 
+
     // FAVORITES LOADER
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new android.support.v4.content.CursorLoader(getApplicationContext(),
+
+        return new CursorLoader(getApplicationContext(),
                 MoviesContract.FavoriteEntry.CONTENT_URI,
-                null,
-                "isFavorite = 1",
-                null,
-                null);
+                null, "isFavorite = 1", null, null);
     }
+
+
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor favoriteCursor) {
-        final MovieCursorAdapter.PosterItemClickListener listener = this;
-       /* final RecyclerView recyclerView = mRecyclerView;
+        if(favoriteCursor.moveToFirst()){
+            Toast.makeText(this, favoriteCursor.toString(), Toast.LENGTH_SHORT).show();
+            // create adapter
+            this.mAdapter = new MovieCursorAdapter(getApplicationContext(), favoriteCursor, movies, NUM_LIST_ITEMS, this);
+            this.mAdapter.swapCursor(favoriteCursor);
 
-         List<Movies>  movies = null;
-        movies = new ArrayList<Movies>();
-
-
-        if (favoriteCursor != null) {
-            int i = 0;
-            int count = favoriteCursor.getCount();
-            for(i = 0; i < count; i++) {
-                favoriteCursor.moveToNext();
-                Movies movie = new Movies(favoriteCursor.getInt(favoriteCursor.getColumnIndex("movie_id")),
-                        favoriteCursor.getString(favoriteCursor.getColumnIndex("title")),
-                        favoriteCursor.getString(favoriteCursor.getColumnIndex("poster_path")),
-                        favoriteCursor.getString(favoriteCursor.getColumnIndex("backdrop_path")),
-                        favoriteCursor.getString(favoriteCursor.getColumnIndex("release_date")),
-                        favoriteCursor.getDouble(favoriteCursor.getColumnIndex("vote_average")),
-                        favoriteCursor.getString(favoriteCursor.getColumnIndex("overview")));
-                movies.add(movie);
-
-            }
-            mRecyclerView.setAdapter(new MovieAdapter(getApplicationContext(), NUM_LIST_ITEMS, movies, listener));
-
-        } else {
+        }
+        else{
             mRecyclerView.setVisibility(View.GONE);
             mNoData.setVisibility(View.VISIBLE);
-        }*/
-
-
-        mAdapter.swapCursor(favoriteCursor);
-
+        }
     }
 
 

@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.movieshunt.simonini.movieshunt.R;
 import com.movieshunt.simonini.movieshunt.models.Movies;
@@ -26,7 +27,7 @@ import java.util.List;
 
 
 
-public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAdapter.ViewHolder> implements
+public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAdapter.ViewHolder>
 
 {
 
@@ -49,8 +50,9 @@ public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAda
     /*
        ADAPTER
     */
-    public MovieCursorAdapter(Context context, Cursor cursor, int numberOfItems, PosterItemClickListener listener) {
+    public MovieCursorAdapter(Context context, Cursor cursor,  List<Movies> movies, int numberOfItems, PosterItemClickListener listener) {
         super(context,cursor);
+        mMovies = movies;
         mNumberItems = numberOfItems;
         this.context = context;
         mOnClickListener = listener;
@@ -62,7 +64,7 @@ public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAda
     // onCreateViewHolder()
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        Log.v("onCreateViewHolder", "onCreateViewHolder is called !");
+
         Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.poster;
 
@@ -80,12 +82,12 @@ public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAda
 
     //onBindViewHolder()
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position, Cursor cursor) {
+    public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
 
         Movies movies = Movies.fromCursor(cursor);
-
+        Log.v("onCreateViewHolder", movies.toString());
         // Get the data model based on position
-        Movies movie = mMovies.get(position);
+        //Movies movie = mMovies.get(position);
 
         // Set item views based on your views and data model
         ImageView imageView = holder.posterView;
@@ -102,8 +104,8 @@ public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAda
     //getItemCount() : returns the mNumberItems var
     @Override
     public int getItemCount() {
-        mNumberItems = mMovies.size();
-        return mNumberItems;
+      mNumberItems = mMovies.size();
+      return mNumberItems;
     }
 
     /*

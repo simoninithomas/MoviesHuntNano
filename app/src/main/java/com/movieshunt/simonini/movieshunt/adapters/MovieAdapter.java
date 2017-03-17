@@ -3,7 +3,6 @@ package com.movieshunt.simonini.movieshunt.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +46,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     // onCreateViewHolder()
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        Log.v("onCreateViewHolder", "onCreateViewHolder is called !");
         Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.poster;
 
@@ -74,7 +72,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         ImageView imageView = holder.posterView;
 
         Picasso.with(context)
-                .load(movie.getPoster())
+                .load("http://image.tmdb.org/t/p/w342/" + movie.getPoster())
                 .placeholder(R.drawable.load)
                 .error(R.drawable.ic_picture_error)
                 .into(imageView);

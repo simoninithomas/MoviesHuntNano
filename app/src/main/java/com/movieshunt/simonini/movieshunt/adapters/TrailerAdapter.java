@@ -2,7 +2,6 @@ package com.movieshunt.simonini.movieshunt.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +46,6 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
     // onCreateViewHolder()
     @Override
     public TrailerViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        Log.v("onCreateViewHolder", "onCreateViewHolder is called !");
         Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.trailer;
 

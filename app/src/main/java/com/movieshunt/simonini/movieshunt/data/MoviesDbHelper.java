@@ -13,7 +13,7 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "favorites.db";
 
     // Version of our database
-    private static final int VERSION = 8;
+    private static final int VERSION = 12;
 
     // Constructor
     public MoviesDbHelper(Context context) {

@@ -168,14 +168,15 @@ public class MovieInfoActivity extends AppCompatActivity implements TrailerAdapt
             Bind information
          */
         Picasso.with(context)
-                .load(movieSelected.getBackdrop())
+                .load("http://image.tmdb.org/t/p/w342/" + movieSelected.getBackdrop())
                 .placeholder(R.drawable.load)
                 .error(R.drawable.ic_picture_error)
                 .into(backdrop);
+
         title.setText(movieSelected.getTitle());
 
         Picasso.with(context)
-                .load(movieSelected.getPoster())
+                .load("http://image.tmdb.org/t/p/w342/" + movieSelected.getPoster())
                 .placeholder(R.drawable.load)
                 .error(R.drawable.ic_picture_error)
                 .into(poster);
@@ -196,22 +197,21 @@ public class MovieInfoActivity extends AppCompatActivity implements TrailerAdapt
 // Fetch and store ShareActionProvider
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
         mShareActionProvider.setShareIntent(createShareIntent());
-
-
-
         return true;
     }
+
     // Call to update the share intent
     private void setShareIntent(Intent shareIntent) {
         if (mShareActionProvider != null) {
             mShareActionProvider.setShareIntent(shareIntent);
         }
     }
+
     private Intent createShareIntent() {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, "Hello");
-
+        //String hello = trailerArrayList.get(1).getKey();
+        //shareIntent.putExtra(Intent.EXTRA_TEXT, hello);
         return shareIntent;
     }
 
@@ -222,7 +222,6 @@ public class MovieInfoActivity extends AppCompatActivity implements TrailerAdapt
         switch (item.getItemId()) {
             case R.id.action_share:
                 createShareIntent();
-                Toast.makeText(this, "Do we ?", Toast.LENGTH_SHORT).show();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -231,9 +230,6 @@ public class MovieInfoActivity extends AppCompatActivity implements TrailerAdapt
     /*
         SHARE INTENT
      */
-
-
-
     @Override
     public void onTrailerItemClick(int clickedTrailerIndex) {
         Context context = getApplicationContext();
@@ -323,9 +319,7 @@ public class MovieInfoActivity extends AppCompatActivity implements TrailerAdapt
         } else {
             return false;
         }
-
     }
-
 
     /*
         Update our favorite button:
@@ -334,7 +328,6 @@ public class MovieInfoActivity extends AppCompatActivity implements TrailerAdapt
         Thanks for the advice use an AsyncTask to update the UI @Dimitry Malovitch
      */
     public void updateFavoriteButton() {
-        Log.v("Update", "UpdateFavorite button");
         new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... params) {
@@ -351,8 +344,6 @@ public class MovieInfoActivity extends AppCompatActivity implements TrailerAdapt
                     alreadyFavorite.setVisibility(View.VISIBLE);
                 }
             }
-
-
         }.execute();
     }
 }

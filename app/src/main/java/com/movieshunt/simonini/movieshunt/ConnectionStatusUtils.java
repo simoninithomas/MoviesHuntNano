@@ -5,23 +5,21 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 
-public class ConnectionStatusUtils{
+public class ConnectionStatusUtils {
 
-    public static Boolean  verifyConnection(Context context, View view){
-        Log.v("OK", "This thing is really called?");
-    ConnectivityManager cm =
-            (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    public static Boolean verifyConnection(Context context, View view) {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-    NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-    boolean isConnected = activeNetwork != null &&
-            activeNetwork.isConnectedOrConnecting();
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
         alertUserNoConnection(isConnected, view);
-    return isConnected;
+        return isConnected;
     }
 
     // Showing the status in Snackbar
@@ -29,10 +27,9 @@ public class ConnectionStatusUtils{
         String message;
         int color;
         if (!isConnected) {
-            message = "You're offline, this is data saved. Please turn on your internet connection.";
+            message = "You're offline please turn on your internet connection.";
             Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
             snackbar.show();
-
 
         }
     }

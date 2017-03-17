@@ -1,67 +1,44 @@
 package com.movieshunt.simonini.movieshunt.adapters;
+
 import android.content.Context;
-import android.database.Cursor;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
-import java.util.List;
-
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.movieshunt.simonini.movieshunt.R;
 import com.movieshunt.simonini.movieshunt.models.Movies;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
-
-
-
-public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAdapter.ViewHolder>
-
-{
-
-    // Specify how many views adapter hold
-    private int mNumberItems;
-
-    // Create a final private PosterItemClickListener called mOnClickListener
-    final private PosterItemClickListener mOnClickListener;
+public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAdapter.ViewHolder> {
+    // Create a final private PosterCursorItemClickListener called mOnClickListener
+    final private PosterCursorItemClickListener mOnClickListener;
 
     private Context context;
 
-    // Add an interface called PosterItemClickListener
+    // Add an interface called osterCursorItemClickListener
     // Within that interface, define a void method called onListItemClick that takes an int as a parameter
-    public interface PosterItemClickListener {
-        void onPosterItemClick(int clickedPosterIndex);
+    public interface PosterCursorItemClickListener {
+        void onPosterItemCursorClick(int clickedPosterCursorIndex);
     }
 
     // Add a ListItemClickListener as a parameter to the constructor and store it in mOnClickListener
     /*
        ADAPTER
     */
-    public MovieCursorAdapter(Context context, Cursor cursor, PosterItemClickListener listener) {
-        super(context,cursor);
-        this.context = context;
-        mOnClickListener = listener;
+    public MovieCursorAdapter(Context context, Cursor cursor, PosterCursorItemClickListener cursorListener) {
+        super(context, cursor);
+        mOnClickListener = cursorListener;
     }
-
 
 
     // Override our 3 functions
     // onCreateViewHolder()
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-
         Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.poster;
 
@@ -80,21 +57,17 @@ public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAda
     //onBindViewHolder()
     @Override
     public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
-
-        Movies movies = Movies.fromCursor(cursor);
-        Log.v("onCreateViewHolder", movies.toString());
-        // Get the data model based on position
-        //Movies movie = mMovies.get(position);
+        Movies movies = null;
+        movies = Movies.fromCursor(cursor);
 
         // Set item views based on your views and data model
         ImageView imageView = holder.posterView;
 
         Picasso.with(context)
-                .load(movies.getPoster())
+                .load("http://image.tmdb.org/t/p/w342/" + movies.getPoster())
                 .placeholder(R.drawable.load)
                 .error(R.drawable.ic_picture_error)
                 .into(imageView);
-
 
     }
 
@@ -102,14 +75,8 @@ public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAda
     //getItemCount() : returns the mNumberItems var
     @Override
     public int getItemCount() {
-        Log.v("Count", "Get item count called");
-        /*mNumberItems = mMovies.size();
-        String count = String.valueOf(mNumberItems);
-        Log.v("Count", count);
-        return mNumberItems;*/
-        int itemCount = getItemCount();
-
-        return itemCount;
+        Cursor cursor = getCursor();
+        return cursor.getCount();
     }
 
     /*
@@ -132,7 +99,7 @@ public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAda
          * TextViews and set an onClickListener to listen for clicks. Those will be handled in the
          * onClick method below.
          */
-        public ViewHolder (View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
 
             // Call setOnClickListener on the View passed into the constructor (use 'this' as the OnClickListener)
@@ -140,11 +107,10 @@ public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAda
             itemView.setOnClickListener(this);
         }
 
-
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
-            mOnClickListener.onPosterItemClick(clickedPosition);
+            mOnClickListener.onPosterItemCursorClick(clickedPosition);
         }
     }
 
